@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="myApp" class="no-js">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Youtube</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="bower_components/angular-loading-bar/build/loading-bar.min.css"/>
+    <link rel="stylesheet" href="bower_components/html5-boilerplate/dist/css/normalize.css">
+    <link rel="stylesheet" href="assets/css/app.css">
+</head>
+<body>
+<nav ng-controller="appCtrl">
+    <div>
+        <a ui-sref="root()">
+            <div class="logo">
+                <img src="assets/img/youtube-logo.svg" class="logo__img" alt="Youtube logo">
+                <span class="logo__localization">eg</span>
+            </div>
+        </a>
+    </div>
+    <div>
+        <form ng-submit="getSearch()" method="post" class="search">
+            <div class="search__container">
+                <input type="text" class="search__input" ng-model="search_value" placeholder="Search">
+            </div>
+            <button type="submit" class="search__button">
+                <img src="assets/img/search.png" class="search__img" alt="">
+            </button>
+        </form>
+    </div>
+</nav>
+<div class="container">
+    <ui-view></ui-view>
+</div>
+
+<script src="assets/js/api.google.js"></script>
+
+<script src="bower_components/angular/angular.js"></script>
+<script src="bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
+
+<script src="bower_components/angular-animate/angular-animate.min.js"></script>
+<script type="text/javascript" src="bower_components/angular-loading-bar/build/loading-bar.min.js"></script>
+<script type="text/javascript" src="assets/js/timeago.min.js"></script>
+
+
+<script src="app.js"></script>
+
+<!--filters-->
+<script src="filters/filters.js"></script>
+
+<!--services-->
+<script src="services/gapi.js"></script>
+
+<!--components-->
+<script src="./components/search/component.js"></script>
+<script src="./components/channel/component.js"></script>
+<script src="./components/video/component.js"></script>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<div scroll ng-show="search !== undefined" :search="search" :search-list="searchList(search.nextPageToken)">
+    <div class="d-flex justify-content-between">
+        <div class="result_count">
+            About {{search.pageInfo.totalResults | number : fractionSize}} {{filter ? "filtered" : ""}} results
+        </div>
+        <div class="filter__button" ng-click="showFilter = !showFilter">
+            <img src="assets/img/filter.svg" class="filter__icon" alt="Filter icon">
+            <div class="filter__bTitle">Filter</div>
+        </div>
+    </div>
+    <div ng-show="showFilter" class="filter__container">
+        <div class="filter">
+            <div class="filter__title">Upload Date</div>
+            <div class="filter__option"
+                 ng-class="{'--disabled': (type == 'channel') || (type == 'playlist')}">
+                <span class="filter__name"
+                      ng-class="{'--active': date == 'lh'}"
+                       ui-sref="search({date: 'lh'})">Last hour</span>
+                <span class="filter__remove"
+                      ui-sref="search({date: ''})"
+                      ng-class="{'--show': date == 'lh'}">✖</span>
+            </div>
+            <div class="filter__option" ng-class="{'--disabled': (type == 'channel') || (type == 'playlist')}">
+                <span class="filter__name"
+                      ng-class="{'--active': date == 'tt'}"
+                      ui-sref="search({date: 'tt'})">today</span>
+                <span class="filter__remove"
+                      ui-sref="search({date: ''})"
+                      ng-class="{'--show': date == 'tt'}">✖</span>
+            </div>
+            <div class="filter__option" ng-class="{'--disabled': (type == 'channel') || (type == 'playlist')}">
+                <span class="filter__name"
+                      ng-class="{'--active': date == ''}"
+                      ui-sref="search({date: ''})">this week</span>
+                <span class="filter__remove"
+                      ui-sref="search({date: ''})"
+                      ng-class="{'--show': date == ''}">✖</span>
+            </div>
+            <div class="filter__option" ng-class="{'--disabled': (type == 'channel') || (type == 'playlist')}">
+                <span class="filter__name"
+                      ng-class="{'--active': date == 'tm'}"
+                      ui-sref="search({date: 'tm'})">this month</span>
+                <span class="filter__remove"
+                      ui-sref="search({date: ''})"
+                      ng-class="{'--show': date == 'tm'}">✖</span>
+            </div>
+            <div class="filter__option" ng-class="{'--disabled': (type == 'channel') || (type == 'playlist')}">
+                <span class="filter__name"
+                      ng-class="{'--active': date == 'ty'}"
+                      ui-sref="search({date: 'ty'})">this year</span>
+                <span class="filter__remove"
+                      ui-sref="search({date: ''})"
+                      ng-class="{'--show': date == 'ty'}">✖</span>
+            </div>
+        </div>
+        <div class="filter">
+            <div class="filter__title">Type</div>
+            <div class="filter__option">
+                <span class="filter__name"
+                      ng-class="{'--active': type == 'video'}"
+                      ui-sref="search({type: 'video'})">video</span>
+                <span class="filter__remove"
+                      ng-class="{'--show': type == 'video'}"
+                      ui-sref="search({type: ''})">✖</span>
+            </div>
+            <div class="filter__option">
+                <span class="filter__name"
+                      ng-class="{'--active': type == 'channel'}"
+                      ui-sref="search({type: 'channel',date: ''})">channel</span>
+                <span class="filter__remove"
+                      ng-class="{'--show': type == 'channel'}"
+                      ui-sref="search({type: ''})">✖</span>
+            </div>
+            <div class="filter__option">
+                <span class="filter__name"
+                      ng-class="{'--active': type == 'playlist'}"
+                      ui-sref="search({type: 'playlist',date: ''})">playlist</span>
+                <span class="filter__remove"
+                      ng-class="{'--show': type == 'playlist'}"
+                      ui-sref="search({type: ''})">✖</span>
+            </div>
+        </div>
+        <div class="filter">
+            <div class="filter__title">Sort By</div>
+            <div class="filter__option">
+                <span class="filter__name"
+                      ng-class="{'--active': (sort == 'relevance') || (sort == undefined)}"
+                      ui-sref="search({sort: 'relevance'})">relevance</span>
+            </div>
+            <div class="filter__option">
+                <span class="filter__name"
+                      ng-class="{'--active': sort == 'date'}"
+                      ui-sref="search({sort: 'date'})">upload date</span>
+            </div>
+            <div class="filter__option">
+                <span class="filter__name"
+                      ng-class="{'--active': sort == 'viewCount'}"
+                      ui-sref="search({sort: 'viewCount'})">view count</span>
+            </div>
+            <div class="filter__option">
+                <span class="filter__name"
+                      ng-class="{'--active': sort == 'rating'}"
+                      ui-sref="search({sort: 'rating'})">rating</span>
+            </div>
+        </div>
+    </div>
+    <div class="separator"></div>
+    <video-render :videos="videos"></video-render>
+    <channel-render :channels="channels"></channel-render>
+    <playlist-render :playlists="playlists" :playlistItems="playlistItems"></playlist-render>
+    <div id="spinner">
+        <img src="assets/img/spinner.gif" alt="Spinner icon" class="spinner__circle">
+    </div>
+</div>

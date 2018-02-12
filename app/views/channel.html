@@ -1,0 +1,21 @@
+<div class="channel">
+    <div class="channel_banner">
+        <img ng-src="{{channel[0].brandingSettings.image.bannerImageUrl}}" ng-alt="{{channel[0].snippet.title}} banner">
+    </div>
+    <div class="channel__info">
+        <div class="channel_comp__thumbnail channel__thumbnail--md">
+            <div class="channel_comp__avatar channel__avatar--md">
+                <img ng-src='{{channel[0].snippet.thumbnails.medium.url}}' alt="">
+            </div>
+        </div>
+        <div class="channel__header header--scope">
+            <div class="channel__title">{{channel[0].snippet.title}}</div>
+            <div class="channel_count text --color_dark_gray" ng-hide="channel[0].statistics.hiddenSubscriberCount">
+                {{channel[0].statistics.subscriberCount | number : fractionSize}} subscribers
+            </div>
+        </div>
+        <div class="button button--subscribe">
+            Subscribe {{channel[0].statistics.subscriberCount | convNum: 0}}
+        </div>
+    </div>
+</div>

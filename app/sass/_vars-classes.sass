@@ -1,0 +1,34 @@
+$browser-context: 10 !default
+$primary-red-color: #e62117 !default
+$primary-dark-color: #111111 !default
+$secondary-dark-color: transparentize($primary-dark-color, .4) !default
+$primary-gray-color: #eeeeee !default
+$secondary-gray-color: #888888 !default
+$secondary-gray-color: darken($primary-gray-color, 20%) !default
+$primary-blue-color: #2793e6 !default
+
+
+.text
+  &.--color_dark_gray
+    color: $secondary-gray-color !important
+  &.--font_size_scope
+    font-size: em(25) !important
+
+.d-flex
+  display: flex !important
+
+.justify-content-between
+  justify-content: space-between !important
+
+.icon
+  width: 20px
+  height: 20px
+  background: transparent
+  border: 0
+  padding: 8px
+
+.--pointer
+  cursor: pointer !important
+
+.--invert
+  filter: invert(90%) !important

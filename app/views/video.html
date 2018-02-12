@@ -1,0 +1,61 @@
+<div class="video">
+    <div class="video__iframe">
+        <iframe width="70%" height="450" ng-src="{{ videoId | youtubeEmbedUrl }}"
+                frameborder="0"
+                allow="autoplay; encrypted-media"
+                allowfullscreen>
+        </iframe>
+    </div>
+    <div class="video__info">
+        <div class="video__title">{{video[0].snippet.title}}</div>
+        <div class="d-flex justify-content-between">
+            <div class="video__count text --color_dark_gray">
+                {{video[0].statistics.viewCount | number}} views
+            </div>
+            <div class="video_actions">
+                <span class="video__action --pointer" title="I like this">
+                    <img src="assets/img/like-icon.svg"
+                         class="icon --invert" alt="Like">
+                    {{video[0].statistics.likeCount | convNum: 0}}
+                </span>
+                <span class="video__action --pointer" title="I dislike this">
+                    <img src="assets/img/dislick-icon.svg"
+                         class="icon --invert" alt="Dislike">
+                    {{video[0].statistics.dislikeCount | convNum: 0}}
+                </span>
+                <span class="video__action --pointer" title="Share">
+                    <img src="assets/img/share-icon.svg"
+                         class="icon --invert" alt="Share">
+                    Share
+                </span>
+                <span class="video__action --pointer" title="Add to">
+                    <img src="assets/img/playlist-icon.svg"
+                         class="icon --invert" alt="Add-to">
+                </span>
+                <span class="video__action --pointer">
+                    <img src="assets/img/dots-icon.svg"
+                         class="icon --invert" alt="Dots">
+                </span>
+                <div class="like_bar">
+                    <div class="like_bar--fill" style="{{likePercentage(video[0].statistics.likeCount,video[0].statistics.dislikeCount)}}"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="channel__info">
+        <div class="channel__thumbnail channel__thumbnail--sm">
+            <a ui-sref="channel({id:channel[0].id})">
+                <div class="channel__avatar channel__avatar--sm">
+                    <img ng-src='{{channel[0].snippet.thumbnails.medium.url}}'
+                         alt="{{channel[0].snippet.title}} Avatar">
+                </div>
+            </a>
+        </div>
+        <div class="channel__header">
+            <div class="channel__title">{{channel[0].snippet.title}}</div>
+            <span class="video__date">Published on {{video[0].snippet.publishedAt | date : "dd MMM yyyy"}}</span>
+            <div class="video__description">{{video[0].snippet.description}}</div>
+        </div>
+    </div>
+</div>
+

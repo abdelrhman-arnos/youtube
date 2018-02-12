@@ -1,0 +1,144 @@
+.element-render
+  display: block
+  transition: .5s
+
+.element
+  display: flex
+  margin-bottom: 20px
+  flex-direction: row
+  position: relative
+
+.element__title
+  color: $primary-dark-color
+  display: block
+  max-height: 4.8rem
+  overflow: hidden
+  font-size: em(18)
+  font-weight: 400
+  line-height: em(14)
+
+.element__separator
+  display: inline-block
+  color: $secondary-dark-color
+  margin: 0 4px
+
+.element__details
+  color: $secondary-dark-color
+  max-width: 100%
+  padding-top: 8px
+  padding-bottom: 5px
+  line-height: em(10)
+  max-height: 3.6rem
+  overflow: hidden
+  font-size: em(13)
+  font-weight: 400
+  text-transform: none
+  display: flex
+  -ms-flex-wrap: wrap
+  -webkit-flex-wrap: wrap
+  flex-wrap: wrap
+
+.element__description
+  color: $secondary-dark-color
+  padding-top: 5px
+  margin-bottom: 8px
+  display: block
+  line-height: 1.8rem
+  max-height: 3.6rem
+  overflow: hidden
+  font-weight: 400
+  font-size: em(13)
+  text-transform: none
+
+.element__overlay
+  position: absolute
+  right: 0
+  top: 0
+  bottom: 0
+  background-color: transparentize($primary-dark-color, .2)
+  color: transparentize(white, .2)
+  text-align: center
+  font-size: em(16)
+  font-weight: 400
+  line-height: em(20)
+  display: flex
+  flex-direction: column
+  align-items: center
+  justify-content: center
+  width: 108px
+
+.element__avatar
+  border-radius: 50%
+  background-color: transparent
+  overflow: hidden
+  height: 136px
+  width: 136px
+  margin: auto
+
+.element__playAll
+  opacity: 0
+  color: transparentize(white, .2)
+  background-color: transparentize($primary-dark-color, .2)
+  text-align: center
+  transition: opacity 0.3s
+  z-index: 1
+  position: absolute
+  top: 0
+  right: 0
+  bottom: 0
+  left: 0
+  display: flex
+  flex-direction: row
+  align-items: center
+  justify-content: center
+  font-size: 1.3rem
+  font-weight: 500
+  letter-spacing: .007px
+  text-transform: uppercase
+
+.element__text
+  max-width: 600px
+  min-width: 0
+  text-decoration: none
+  color: $secondary-dark-color
+  flex: 1
+  display: flex
+  flex-direction: column
+
+.element__thumbnail
+  flex: none
+  width: 246px
+  height: 138px
+  margin-right: 16px
+  position: relative
+
+.element__time
+  position: absolute
+  bottom: 0
+  right: 0
+  margin: 4px
+  color: white
+  background-color: $primary-dark-color
+  opacity: .8
+  padding: 2px 4px
+  border-radius: 2px
+  letter-spacing: .5px
+  font-size: em(12)
+  font-weight: 500
+  line-height: em(12)
+  flex-direction: row
+  align-items: center
+  display: inline-flex
+
+.element__live-now
+  border-radius: 2px
+  display: inline-block
+  padding: 2px 4px
+  font-size: em(12)
+  font-weight: 500
+  line-height: em(12)
+  margin: 0
+  background: white
+  text-transform: uppercase
+  color: $primary-red-color
+  border: 1px solid $primary-red-color

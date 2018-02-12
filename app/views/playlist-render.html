@@ -1,0 +1,35 @@
+<div class="playlist_comp" ng-repeat="(key, item) in playlists">
+    <div class="playlist_comp__thumbnail">
+        <a ui-sref="playlist({id: item.id})">
+            <img ng-src='{{item.snippet.thumbnails.medium.url}}' alt="">
+            <div class="playlist_comp__overlay">
+                {{item.contentDetails.itemCount}}
+                <img src="assets/img/playlist-icon.svg" alt="">
+            </div>
+            <div class="playlist_comp__playAll">
+                ► Play all
+            </div>
+        </a>
+    </div>
+    <div class="playlist_comp__text">
+        <div class="playlist_comp__header">
+            <a ui-sref="video({id: item.id})">
+                <div class="playlist_comp__title">{{item.snippet.title}}</div>
+            </a>
+            <div class="playlist_comp__description">
+                <a ui-sref="channel({id: item.snippet.channelId})">
+                    <div class="playlist_comp__channel-name">
+                        {{item.snippet.channelTitle}}
+                    </div>
+                </a>
+            </div>
+
+            <a ui-sref="playlist({id: item.id})">
+                <div class="playlist_comp__list">
+                    View full playlist ({{item.contentDetails.itemCount}} videos)
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+
