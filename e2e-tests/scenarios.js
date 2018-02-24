@@ -1,42 +1,82 @@
 'use strict';
 
-/* https://github.com/angular/protractor/blob/master/docs/toc.md */
+browser.ignoreSynchronization = true;
+browser.waitForAngular();
+browser.sleep(500);
 
-describe('my app', function() {
+let searchpage = require('./search/searchpage');
 
+describe('youtube app', () => {
 
-  it('should automatically redirect to /view1 when location hash/fragment is empty', function() {
-    browser.get('index.html');
-    expect(browser.getLocationAbsUrl()).toMatch("/view1");
-  });
+    describe('Access search section', () => {
+        it('Should be able to search', () => {
+            const search = 'car';
 
+            browser.get('index.html');
+            searchpage.searchInput(search);
+            searchpage.searchBtn.click();
+            expect(browser.getCurrentUrl()).toContain(`query=${search}`);
+        });
 
-  describe('view1', function() {
+        xdescribe('Access filter section', () => {
+            beforeEach(() => {
+                searchpage.openFilter();
+                expect(searchpage.filterContainer.isDisplayed);
+            });
 
-    beforeEach(function() {
-      browser.get('index.html#!/view1');
+            it('Should update search result when filter by type', () => {
+                // type: video, channel and playlist
+                const type = 'channel';
+                // date: hour, today, week, month and year
+                const date = 'week';
+
+                searchpage.filterOption(type);
+                expect(browser.getCurrentUrl()).toContain(`type=${type}`);
+
+                // can't select date filter when choosing channel and playlist
+                if(type !== 'video'){
+                    expect($(`[data-value="${date}"]`).getAttribute('class')).toContain('--disabled');
+                }
+                browser.sleep(5000);
+            });
+
+            it('Should update search result when filter by sort', () => {
+                // sort: relevance, date, viewCount and rating
+                const sort = 'viewCount';
+
+                searchpage.filterOption(sort);
+                expect(browser.getCurrentUrl()).toContain(`sort=${sort}`);
+            });
+
+            it('Should update search result when filter by upload date', () => {
+                // date: hour, today, week, month and year
+                const date = 'hour';
+
+                searchpage.filterOption(date);
+                expect(browser.getCurrentUrl()).toContain(`date=${date}`);
+            });
+        });
+
+        describe('Access search result elements', () => {
+            beforeEach(() => {
+                searchpage.openFilter();
+                expect(searchpage.filterContainer.isDisplayed);
+            });
+
+            it('Should be open the element where the type', () => {
+                // type: video, channel and playlist
+                const type = 'video';
+                const element = searchpage.searchResultItem(type);
+                let elementId = 0;
+
+                searchpage.filterOption(type);
+                expect(browser.getCurrentUrl()).toContain(`type=${type}`);
+                browser.sleep(5000);
+
+                element.getAttribute('data-value');
+                element.click();
+                expect(browser.getCurrentUrl()).toContain(elementId);
+            });
+        });
     });
-
-
-    it('should render view1 when user navigates to /view1', function() {
-      expect(element.all(by.css('[ng-view] p')).first().getText()).
-        toMatch(/partial for view 1/);
-    });
-
-  });
-
-
-  describe('view2', function() {
-
-    beforeEach(function() {
-      browser.get('index.html#!/view2');
-    });
-
-
-    it('should render view2 when user navigates to /view2', function() {
-      expect(element.all(by.css('[ng-view] p')).first().getText()).
-        toMatch(/partial for view 2/);
-    });
-
-  });
 });

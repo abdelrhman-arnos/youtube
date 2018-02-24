@@ -2,12 +2,13 @@
 
 angular.module('myApp.channel', [])
 
-    .controller('channelCtrl', ['$scope', '$stateParams', 'gapiService',
-        function ($scope, $stateParams, gapiService) {
+    .controller('channelCtrl', ['$scope', '$stateParams', 'gapiService', '$timeout', 'cfpLoadingBar',
+        function ($scope, $stateParams, gapiService, $timeout, cfpLoadingBar) {
             $scope.channelId = $stateParams.id;
-            $scope.video = [];
             $scope.channel = [];
-            $scope.playlists = [];
+            $scope.channel.videos = [];
+            $scope.playlistsIds = [];
+            $scope.videosIds = [];
 
             gapiService.createResource();
             gapiService.removeEmptyParams();
@@ -15,31 +16,35 @@ angular.module('myApp.channel', [])
             function executeRequest(request) {
                 request.execute(response => {
                     let type = response.items[0].kind.split('youtube#')[1];
-                    $scope.$apply(() => {
-                        switch (type) {
-                            case 'video':
-                                $scope.video.push(response.items[0]);
-                                break;
-                            case 'channel':
-                                playlists(response.items[0].id);
-                                $scope.channel.push(response.items[0]);
-                                break;
-                            case 'playlist':
-                                PlaylistItems(response.items[0].id);
-                                $scope.playlists.push(response.items[0]);
-                                break;
-                            case 'playlistItem':
-                                response.items.forEach((plItem, i) => {
-                                    $scope.playlists.forEach((item, index) => {
-                                        if (item.id == plItem.snippet.playlistId) {
-                                            //
-                                        }
-
-                                    });
-                                });
-                                break;
-                        }
-                    });
+                    switch (type) {
+                        case 'video':
+                            response.items.forEach(item=>{
+                                $scope.channel.videos.push(item);
+                            });
+                            break;
+                        case 'playlistItem':
+                            response.items.forEach(item=>{
+                                $scope.videosIds.push(item.contentDetails.videoId);
+                            });
+                            videoItems($scope.videosIds);
+                            $scope.videosIds = [];
+                            break;
+                        case 'channel':
+                            channelSections(response.items[0].id);
+                            $scope.channel.push(response.items[0]);
+                            break;
+                        case 'channelSection':
+                            response.items.forEach(item=>{
+                                if(item.snippet.type==='singlePlaylist'){
+                                    $scope.playlistsIds.push(item.contentDetails.playlists[0]);
+                                }
+                            });
+                            PlaylistItems($scope.playlistsIds);
+                            break;
+                    }
+                    $timeout(() => {
+                        cfpLoadingBar.complete();
+                    }, 500);
                 });
             }
 
@@ -48,38 +53,28 @@ angular.module('myApp.channel', [])
                     '/youtube/v3/playlistItems',
                     {
                         'playlistId': id,
-                        'part': 'snippet,contentDetails',
-                        'maxResults': 2,
+                        'maxResults': 10,
+                        'part': 'contentDetails',
                         'key': gapiService.apiKey
                     }
                 ));
             }
 
-            function videoItems(id) {
+            function videoItems(...id) {
+                if (id[0].length === 0) return false;
                 executeRequest(gapiService.buildApiRequest('GET',
                     '/youtube/v3/videos',
                     {
                         'id': id,
-                        'part': 'snippet,contentDetails,statistics,liveStreamingDetails',
+                        'part': 'snippet,contentDetails,statistics,liveStreamingDetails,status',
                         'key': gapiService.apiKey
                     }
                 ));
             }
 
-            /*function playlistItems(id) {
+            function channelSections(id) {
                 executeRequest(gapiService.buildApiRequest('GET',
-                    '/youtube/v3/playlists',
-                    {
-                        'id': id,
-                        'part': 'snippet,contentDetails',
-                        'key': gapiService.apiKey
-                    }
-                ));
-            }*/
-
-            function playlists(id) {
-                executeRequest(gapiService.buildApiRequest('GET',
-                    '/youtube/v3/playlists',
+                    '/youtube/v3/channelSections',
                     {
                         'channelId': id,
                         'part': 'snippet,contentDetails',

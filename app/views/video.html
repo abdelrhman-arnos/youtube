@@ -1,60 +1,144 @@
 <div class="video">
-    <div class="video__iframe">
-        <iframe width="70%" height="450" ng-src="{{ videoId | youtubeEmbedUrl }}"
-                frameborder="0"
-                allow="autoplay; encrypted-media"
-                allowfullscreen>
-        </iframe>
+    <div class="video__container">
+        <div class="video__iframe">
+            <iframe width="100%" height="450" ng-src="{{ data.video.id | youtubeEmbedUrl }}"
+                    frameborder="0"
+                    allow="autoplay; encrypted-media"
+                    allowfullscreen>
+            </iframe>
+        </div>
+        <div class="playlist_panel --desktop" ng-if="data.playlistVideos.length !== 0">
+            <div class="playlist_panel__head">
+                <div class="playlist__title">{{data.playlist.snippet.title}}</div>
+                <div class="playlist__publisher"><a ui-sref="channel({id: data.playlist.snippet.channelId})">{{data.playlist.snippet.channelTitle}}</a> - 1 / {{data.playlistVideos.length}}</div>
+            </div>
+            <div class="playlist_panel__body">
+                <a ui-sref="video({id: vid.id, list: playlistId})" class="playlist__video" ng-repeat="(key, vid) in data.playlistVideos">
+                    <div class="playlist__play_icon">{{vid.id == videoId ? '▶' : key+1}}</div>
+                    <div class="playlist__play_img">
+                        <img ng-src="{{vid.snippet.thumbnails.medium.url}}">
+                        <div class="video_comp__time">{{vid.contentDetails.duration | duration}}</div>
+                    </div>
+                    <div class="playlist__info">
+                        <div class="playlist__info__title">{{vid.snippet.title}}</div>
+                        <div class="playlist__info__cTitle">{{vid.snippet.channelTitle}}</div>
+                    </div>
+                </a>
+            </div>
+        </div>
     </div>
     <div class="video__info">
-        <div class="video__title">{{video[0].snippet.title}}</div>
+        <div class="video__title">{{data.video.snippet.title}}</div>
+        <div class="video__count text --dark_gray flex-direction-column --mobile">
+            <div>{{data.channel.snippet.title}}</div>
+            <div>{{data.video.statistics.viewCount | number}} views</div>
+        </div>
         <div class="d-flex justify-content-between">
-            <div class="video__count text --color_dark_gray">
-                {{video[0].statistics.viewCount | number}} views
+            <div class="video__count text --dark_gray --desktop">
+                {{data.video.statistics.viewCount | number}} views
             </div>
             <div class="video_actions">
                 <span class="video__action --pointer" title="I like this">
-                    <img src="assets/img/like-icon.svg"
+                    <img src="./assets/img/like-icon.svg"
                          class="icon --invert" alt="Like">
-                    {{video[0].statistics.likeCount | convNum: 0}}
+                    {{data.video.statistics.likeCount | convNum: 0}}
                 </span>
                 <span class="video__action --pointer" title="I dislike this">
-                    <img src="assets/img/dislick-icon.svg"
+                    <img src="./assets/img/dislick-icon.svg"
                          class="icon --invert" alt="Dislike">
-                    {{video[0].statistics.dislikeCount | convNum: 0}}
+                    {{data.video.statistics.dislikeCount | convNum: 0}}
+                </span>
+                <span class="video__action --pointer --mobile" title="Save to">
+                    <img src="./assets/img/plus-icon.png" class="icon" alt="Save to">
+                </span>
+                <span class="video__action --pointer --mobile" title="Flag">
+                    <img src="./assets/img/flag-icon.png" class="icon" alt="Flag">
                 </span>
                 <span class="video__action --pointer" title="Share">
-                    <img src="assets/img/share-icon.svg"
+                    <img src="./assets/img/share-icon.svg"
                          class="icon --invert" alt="Share">
-                    Share
+                    <span class="--desktop">Share</span>
                 </span>
-                <span class="video__action --pointer" title="Add to">
-                    <img src="assets/img/playlist-icon.svg"
+                <span class="video__action --pointer --desktop" title="Add to">
+                    <img src="./assets/img/playlist-icon.svg"
                          class="icon --invert" alt="Add-to">
                 </span>
-                <span class="video__action --pointer">
-                    <img src="assets/img/dots-icon.svg"
+                <span class="video__action --pointer --desktop">
+                    <img src="./assets/img/dots-icon.svg"
                          class="icon --invert" alt="Dots">
                 </span>
-                <div class="like_bar">
-                    <div class="like_bar--fill" style="{{likePercentage(video[0].statistics.likeCount,video[0].statistics.dislikeCount)}}"></div>
+                <div class="like_bar --desktop">
+                    <div class="like_bar--fill"
+                         style="{{likePercentage(data.video.statistics.likeCount,data.video.statistics.dislikeCount)}}"></div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="channel__info">
+    <div class="playlist_panel --mobile" ng-if="data.playlistVideos.length !== 0">
+        <div class="playlist_panel__head">
+            <div class="playlist__title">{{data.playlist.snippet.title}}</div>
+            <div class="playlist__publisher"><a ui-sref="channel({id: data.playlist.snippet.channelId})">{{data.playlist.snippet.channelTitle}}</a> - 1 / {{data.playlistVideos.length}}</div>
+        </div>
+        <div class="playlist_panel__body">
+            <a ui-sref="video({id: vid.id, list: playlistId})" class="playlist__video" ng-repeat="(key, vid) in data.playlistVideos">
+                <div class="playlist__play_icon">{{vid.id == videoId ? '▶' : key+1}}</div>
+                <div class="playlist__play_img">
+                    <img ng-src="{{vid.snippet.thumbnails.medium.url}}">
+                    <div class="video_comp__time">{{vid.contentDetails.duration | duration}}</div>
+                </div>
+                <div class="playlist__info">
+                    <div class="playlist__info__title">{{vid.snippet.title}}</div>
+                    <div class="playlist__info__cTitle">{{vid.snippet.channelTitle}}</div>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div class="channel__info --desktop">
         <div class="channel__thumbnail channel__thumbnail--sm">
-            <a ui-sref="channel({id:channel[0].id})">
+            <a ui-sref="channel({id:data.channel.id})">
                 <div class="channel__avatar channel__avatar--sm">
-                    <img ng-src='{{channel[0].snippet.thumbnails.medium.url}}'
-                         alt="{{channel[0].snippet.title}} Avatar">
+                    <img ng-src='{{data.channel.snippet.thumbnails.medium.url}}'
+                         alt="{{data.channel.snippet.title}} Avatar">
                 </div>
             </a>
         </div>
         <div class="channel__header">
-            <div class="channel__title">{{channel[0].snippet.title}}</div>
-            <span class="video__date">Published on {{video[0].snippet.publishedAt | date : "dd MMM yyyy"}}</span>
-            <div class="video__description">{{video[0].snippet.description}}</div>
+            <div class="channel__title">{{data.channel.snippet.title}}</div>
+            <span class="video__date">Published on {{data.video.snippet.publishedAt | date : "dd MMM yyyy"}}</span>
+            <div class="video__description">{{data.video.snippet.description}}</div>
+        </div>
+    </div>
+    <div class="video_comp" ng-repeat="(key, item) in data.videos">
+        <div class="video_comp__thumbnail">
+            <a ui-sref="video({id:item.id})">
+                <img ng-src='{{item.snippet.thumbnails.medium.url}}' alt="">
+                <div class="video_comp__time" ng-hide="item.liveStreamingDetails">{{item.contentDetails.duration |
+                    duration}}
+                </div>
+            </a>
+        </div>
+        <div class="video_comp__text">
+            <div class="video_comp__header">
+                <a ui-sref="video({id:item.id})">
+                    <div class="video_comp__title">{{item.snippet.title}}</div>
+                </a>
+                <div class="video_comp__details">
+                    <div class="video_comp__channel-name">
+                        <a ui-sref="channel({id:item.snippet.channelId})">{{item.snippet.channelTitle}}</a>
+                        <div class="details__separator">•</div>
+                    </div>
+                    <div class="video_comp__counts">
+                    <span ng-show="item.liveStreamingDetails">
+                        {{item.liveStreamingDetails.concurrentViewers | convNum: 0}} watching
+                    </span>
+                        <span ng-hide="item.liveStreamingDetails">{{item.statistics.viewCount | convNum: 0}} views</span>
+                        <div class="details__separator">•</div>
+                    </div>
+                    <div class="video_comp__date">{{item.snippet.publishedAt | timeago}}</div>
+                </div>
+                <div class="video_comp__description">{{item.snippet.description}}</div>
+                <div class="video_comp__live-now" ng-show="item.snippet.liveBroadcastContent == 'live'">Live Now</div>
+            </div>
         </div>
     </div>
 </div>

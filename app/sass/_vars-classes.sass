@@ -1,4 +1,7 @@
+// font-size
 $browser-context: 10 !default
+
+// colors
 $primary-red-color: #e62117 !default
 $primary-dark-color: #111111 !default
 $secondary-dark-color: transparentize($primary-dark-color, .4) !default
@@ -7,15 +10,33 @@ $secondary-gray-color: #888888 !default
 $secondary-gray-color: darken($primary-gray-color, 20%) !default
 $primary-blue-color: #2793e6 !default
 
+$spacer: 1rem !default
+$spacers: () !default
+$spacers: map-merge((0: 0, 1: ($spacer * .25), 2: ($spacer * .5), 3: $spacer, 4: ($spacer * 1.5), 5: ($spacer * 3)), $spacers)
+
+// breakpoints
+$breakpoint-xs: 0  !default
+$breakpoint-sm: 576  !default
+$breakpoint-md: 768  !default
+$breakpoint-lg: 992  !default
+$breakpoint-xl: 1200  !default
+
+// font-family
+$font-family-Roboto: Roboto, Arial, sans-serif !default
 
 .text
-  &.--color_dark_gray
+  &.--red
+    color: $primary-red-color
+  &.--dark_gray
     color: $secondary-gray-color !important
   &.--font_size_scope
     font-size: em(25) !important
 
 .d-flex
   display: flex !important
+
+.flex-direction-column
+  flex-direction: column
 
 .justify-content-between
   justify-content: space-between !important

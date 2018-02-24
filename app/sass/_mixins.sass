@@ -1,2 +1,18 @@
 @function em($pixels, $context: $browser-context)
   @return #{$pixels/$context}em
+
+$padding-array: ('.p'), ('.pt', -top), ('.pb', -bottom), ('.pl', -left), ('.pr', -right)
+@each $label, $attr in $padding-array
+  $num: 0
+  @while $num < 6
+    #{$label}-#{$num}
+      padding#{$attr}: map-get($spacers,$num) +0rem !important
+    $num: $num +1
+
+$margin-array: ('.m'), ('.mt', -top), ('.mb', -bottom), ('.ml', -left), ('.mr', -right)
+@each $label, $attr in $margin-array
+  $num: 0
+  @while $num < 6
+    #{$label}-#{$num}
+      margin#{$attr}: map-get($spacers,$num) +0rem !important
+    $num: $num +1

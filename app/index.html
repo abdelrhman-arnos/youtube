@@ -3,7 +3,9 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Youtube</title>
+    <title>YouTube</title>
+    <base href="/">
+    <link rel="shortcut icon" href="assets/img/favicon.ico" type="image/x-icon">
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="bower_components/angular-loading-bar/build/loading-bar.min.css"/>
@@ -12,24 +14,42 @@
 </head>
 <body>
 <nav ng-controller="appCtrl">
-    <div>
-        <a ui-sref="root()">
-            <div class="logo">
+    <div class="d-flex">
+        <a ui-sref="root()" ng-click="search_value = ''">
+            <div class="logo --desktop">
                 <img src="assets/img/youtube-logo.svg" class="logo__img" alt="Youtube logo">
                 <span class="logo__localization">eg</span>
             </div>
-        </a>
-    </div>
-    <div>
-        <form ng-submit="getSearch()" method="post" class="search">
-            <div class="search__container">
-                <input type="text" class="search__input" ng-model="search_value" placeholder="Search">
+            <div class="logo --mobile">
+                <img src="assets/img/youtube-icon-white.png" class="logo__img" alt="Youtube logo">
             </div>
-            <button type="submit" class="search__button">
-                <img src="assets/img/search.png" class="search__img" alt="">
-            </button>
-        </form>
+        </a>
+        <div class="search__value --mobile"
+             ng-hide="searchMob">
+            {{(search_value==undefined || search_value=='')?'YouTube':search_value}}
+        </div>
     </div>
+    <form ng-submit="getSearch()" method="post" class="search">
+        <div class="search__container --mobile" ng-show="searchMob">
+            <input type="text"
+                   class="search__input"
+                   ng-model="search_value"
+                   placeholder="Search YouTube">
+            <div class="search__button--close" ng-click="searchMob = false">✖</div>
+        </div>
+
+        <div class="search__container --desktop">
+            <input type="text"
+                   class="search__input"
+                   id="search__input--desktop"
+                   ng-model="search_value"
+                   placeholder="Search YouTube">
+        </div>
+
+        <button type="submit" class="search__button" ng-click="searchMob = true">
+            <img src="assets/img/search.png" class="search__img" alt="search-icon">
+        </button>
+    </form>
 </nav>
 <div class="container">
     <ui-view></ui-view>
@@ -45,17 +65,19 @@
 <script type="text/javascript" src="assets/js/timeago.min.js"></script>
 
 
-<script src="app.js"></script>
+<script src="./app.js"></script>
 
 <!--filters-->
-<script src="filters/filters.js"></script>
+<script src="./filters/filters.js"></script>
 
 <!--services-->
-<script src="services/gapi.js"></script>
+<script src="./services/gapi.js"></script>
+<script src="./services/uploadDate.js"></script>
 
 <!--components-->
 <script src="./components/search/component.js"></script>
 <script src="./components/channel/component.js"></script>
 <script src="./components/video/component.js"></script>
+
 </body>
 </html>

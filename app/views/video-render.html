@@ -1,30 +1,41 @@
-<div class="video_comp" ng-repeat="(key, item) in videos">
+<div class="video_comp">
     <div class="video_comp__thumbnail">
-        <a ui-sref="video({id:item.id})">
+        <a ui-sref="video({id:item.id})" data-value="{{item.id}}" data-type="video">
             <img ng-src='{{item.snippet.thumbnails.medium.url}}' alt="">
-            <div class="video_comp__time" ng-hide="item.liveStreamingDetails">{{item.contentDetails.duration | duration}}</div>
+            <div class="video_comp__time"
+                 ng-hide="item.liveStreamingDetails">
+                {{item.contentDetails.duration | duration}}
+            </div>
         </a>
     </div>
     <div class="video_comp__text">
         <div class="video_comp__header">
-            <a ui-sref="video({id:item.id})">
+            <a ui-sref="video({id:item.id})" data-value="{{item.id}}" data-type="video">
                 <div class="video_comp__title">{{item.snippet.title}}</div>
             </a>
             <div class="video_comp__details">
                 <div class="video_comp__channel-name">
-                    <a ui-sref="channel({id:item.snippet.channelId})">{{item.snippet.channelTitle}}</a>
-                    <div class="details__separator">•</div>
+                    <a ui-sref="channel({id:item.snippet.channelId})"
+                       data-value="{{item.snippet.channelId}}"
+                       data-type="channel">{{item.snippet.channelTitle}}</a>
+                    <div class="details__separator --desktop">•</div>
                 </div>
-                <div class="video_comp__counts">
+                <div class="video_comp__counts --desktop">
                     <span ng-show="item.liveStreamingDetails">
                         {{item.liveStreamingDetails.concurrentViewers | convNum: 0}} watching
                     </span>
                     <span ng-hide="item.liveStreamingDetails">{{item.statistics.viewCount | convNum: 0}} views</span>
                     <div class="details__separator">•</div>
                 </div>
-                <div class="video_comp__date">{{item.snippet.publishedAt | timeago}}</div>
+                <div class="video_comp__counts mt-3 --mobile">
+                    <span ng-show="item.liveStreamingDetails">
+                        {{item.liveStreamingDetails.concurrentViewers | number : fractionSize}} watching
+                    </span>
+                    <span ng-hide="item.liveStreamingDetails">{{item.statistics.viewCount | number : fractionSize}} views</span>
+                </div>
+                <div class="video_comp__date --desktop">{{item.snippet.publishedAt | timeago}}</div>
             </div>
-            <div class="video_comp__description">{{item.snippet.description}}</div>
+            <div class="video_comp__description --desktop">{{item.snippet.description}}</div>
             <div class="video_comp__live-now" ng-show="item.snippet.liveBroadcastContent == 'live'">Live Now</div>
         </div>
     </div>

@@ -1,23 +1,25 @@
-<div class="channel_comp" ng-repeat="(key, item) in channels">
+<div class="channel_comp">
     <div class="channel_comp__thumbnail">
-        <a ui-sref="channel({id: item.id})">
+        <a ui-sref="channel({id: item.id})" data-type="channel">
             <div class="channel_comp__avatar">
                 <img ng-src='{{item.snippet.thumbnails.medium.url}}' alt="">
             </div>
         </a>
     </div>
     <div class="channel_comp__text">
-        <a ui-sref="channel({id: item.id})">
+        <a ui-sref="channel({id: item.id})" data-type="channel">
             <div class="channel_comp__header">
                 <div class="channel_comp__title">{{item.snippet.title}}</div>
-                <div class="channel_comp__details">
-                    <div class="channel_comp__counts">
-                        <span>{{item.statistics.subscriberCount | number : fractionSize}} subscribers</span>
-                        <div class="details__separator">•</div>
-                        {{item.statistics.videoCount}} videos
-                    </div>
+                <div class="channel_comp__details --desktop">
+                    <span>{{item.statistics.subscriberCount | number : fractionSize}} subscribers</span>
+                    <div class="details__separator">•</div>
+                    {{item.statistics.videoCount}} videos
                 </div>
-                <div class="channel_comp__description">{{item.snippet.description}}</div>
+                <div class="channel_comp__details --mobile">
+                    <div class="mb-3">{{item.statistics.videoCount}} videos</div>
+                    <span>{{item.statistics.subscriberCount | number : fractionSize}} subscribers</span>
+                </div>
+                <div class="channel_comp__description --desktop">{{item.snippet.description | limitTo:128 }}</div>
             </div>
         </a>
     </div>

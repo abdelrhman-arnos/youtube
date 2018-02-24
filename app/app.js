@@ -6,11 +6,12 @@ angular.module('myApp', [
     'ui.router',
     'myApp.channel',
     'myApp.search',
-    'myApp.video',
+    'myApp.video'
 ])
 
-    .config(['$stateProvider', '$urlRouterProvider', 'cfpLoadingBarProvider',
-        function ($stateProvider, $urlRouterProvider, cfpLoadingBarProvider) {
+    .config(['$locationProvider', '$stateProvider', '$urlRouterProvider', 'cfpLoadingBarProvider',
+        function ($locationProvider, $stateProvider, $urlRouterProvider, cfpLoadingBarProvider) {
+            $locationProvider.html5Mode(true).hashPrefix('!');
             cfpLoadingBarProvider.includeSpinner = false;
             $stateProvider
                 .state('root', {
@@ -24,7 +25,7 @@ angular.module('myApp', [
                     controller: 'channelCtrl'
                 })
                 .state('video', {
-                    url: '/video/:id',
+                    url: '/video/:id?list',
                     templateUrl: 'views/video.html',
                     controller: 'videoCtrl'
                 })
@@ -34,21 +35,21 @@ angular.module('myApp', [
                     controller: 'searchCtrl'
                 })
             ;
-
             $urlRouterProvider.otherwise('/');
         }])
 
-    .controller('appCtrl', ['$scope', '$location', '$timeout', 'cfpLoadingBar', function ($scope, $location, $timeout, cfpLoadingBar) {
-        $scope.start = ()=>{ cfpLoadingBar.start(); };
-        $scope.complete = ()=>{ cfpLoadingBar.complete(); };
+    .controller('appCtrl', ['$scope', '$stateParams', '$location', '$timeout', 'cfpLoadingBar',
+        function ($scope, $stateParams, $location, $timeout, cfpLoadingBar) {
 
         // fake the initial load so first time users can see it right away:
-        $scope.start();
-        $timeout(()=>{ $scope.complete(); }, 750);
+        cfpLoadingBar.start();
+        $timeout(()=>{ cfpLoadingBar.complete(); }, 750);
 
         $scope.getSearch = () => {
             if (!$scope.search_value) return false;
+            if($scope.search_value !== $stateParams.query) $scope.searchMob = false;
             $location.url(`/search?query=${$scope.search_value}`);
         };
+
     }]);
 

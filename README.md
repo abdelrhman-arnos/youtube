@@ -1,43 +1,49 @@
 # Youtube-App
 
-> A Angular project
+> Angular project
 
 ## Build Setup
 
 ``` bash
 # install dependencies
-npm install
-bower install
+npm run prestart
+npm run postinstall
 
 # serve at localhost:8080
 npm run start
 
+# e2e-tests
+npm run protractor
+
 # compile sass files
-gulp default
+npm run sass
 ```
 
-angular: 1.6.9
+## Built With
+* [angular](https://github.com/angular/angular.js): 1.6.9
+* [angular-ui-router](https://ui-router.github.io/ng1/): 1.0.7
+* [protractor](https://github.com/angular/protractor): 4.0.9
 
-angular-ui-router: 1.0.15
 
-The following is the example of directory with explanation:
+The following is the example of directory:
 
-    my-app
+    Youtube-app
           ├── app
           │   └── assets
           │   │   └── css
           │   │   └── img   
           │   │   └── js         
-          ├── components
-          │   └── channel 
-          │   └── search 
-          │   └── video       
-          ├── filters     
-          ├── sass 
-          ├── services
-          ├── views
-          ├── app.js
-          └── index.html
+          │   └── components
+          │   │   └── channel 
+          │   │   └── search 
+          │   │   └── video       
+          │   └── filters     
+          │   └── sass 
+          │   └── services
+          │   └── views
+          │   └── app.js
+          │   └── index.html
+          └── e2e-tests
           
 Copyright
 --------
