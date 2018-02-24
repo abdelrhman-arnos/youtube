@@ -6,20 +6,11 @@ angular.module('myApp.search', ['angular-loading-bar'])
         cfpLoadingBarProvider.includeBar = true;
     }])
 
-    .controller('searchCtrl', ['$scope', '$rootScope', '$stateParams', 'gapiService', '$location', '$timeout', 'cfpLoadingBar',
-        function ($scope, $rootScope, $stateParams, gapiService, $location, $timeout, cfpLoadingBar) {
-            $scope.start = () => {
-                cfpLoadingBar.start();
-            };
-            $scope.complete = () => {
-                cfpLoadingBar.complete();
-            };
-            $scope.resultTypes = [];
+    .controller('searchCtrl', ['$scope', '$stateParams', 'filterDate', 'gapiService', '$location', '$timeout', 'cfpLoadingBar',
+        function ($scope, $stateParams, filterDate, gapiService, $location, $timeout, cfpLoadingBar) {
             $scope.search = [];
-            $scope.videos = [];
-            $scope.channels = [];
-            $scope.playlists = [];
-            $scope.playlistItems = [];
+            $scope.search.items = [];
+            $scope.videosIds = [];
 
             gapiService.createResource();
             gapiService.removeEmptyParams();
@@ -29,29 +20,56 @@ angular.module('myApp.search', ['angular-loading-bar'])
                     cfpLoadingBar.start();
                     let type = response.items[0].kind.split('youtube#')[1];
                     if (type === 'searchResult') {
-                        response.items.forEach(item => searchItems(item));
-                        $scope.search = response;
+                        searchItems(response.items);
+                        $scope.search.items.push(...response.items);
+                        $scope.search.totalResults = response.pageInfo.totalResults;
+                        $scope.search.nextPageToken = response.nextPageToken;
                     }
+                    $scope.search.items.forEach(searchElement => {
+                        response.items.forEach(element => {
+                            if (searchElement.id[`${type}Id`] === element.id) {
+                                searchElement.data = element;
+                                searchElement.data.videos = [];
+                                searchElement.playlistItems = [];
+                            }
+                        });
+                    });
                     switch (type) {
                         case 'video':
-                            $scope.resultTypes.push(type);
-                            $scope.videos.push(response.items[0]);
-                            break;
-                        case 'channel':
-                            $scope.resultTypes.push(type);
-                            $scope.channels.push(response.items[0]);
+                            if ($stateParams.type === 'playlist') {
+                                response.items.forEach(resElm => {
+                                    $scope.search.items.find(elm => {
+                                        for (let i = 0; i < elm.playlistItems.length; i++) {
+                                            if (elm.playlistItems[i] === resElm.id) {
+                                                elm.data.videos.push(resElm);
+                                            }
+                                        }
+                                    });
+                                });
+                            }
                             break;
                         case 'playlist':
-                            $scope.resultTypes.push(type);
-                            PlaylistItems(response.items[0].id);
-                            $scope.playlists.push(response.items[0]);
+                            response.items.forEach(item => {
+                                PlaylistItems(item.id);
+                            });
                             break;
                         case 'playlistItem':
-                            $scope.playlistItems.push(...response.items);
+                            response.items.forEach(vid => {
+                                // Use this array to call video API ones.
+                                $scope.videosIds.push(vid.contentDetails.videoId);
+                                $scope.search.items.find(elm => {
+                                    if (vid.snippet.playlistId === elm.data.id) {
+                                        // Add video id to use in append videos.
+                                        elm.playlistItems.push(vid.contentDetails.videoId);
+                                    }
+                                });
+                            });
+                            videoItems($scope.videosIds);
+                            $scope.videosIds = [];
                             break;
                     }
                     $timeout(() => {
-                        $scope.complete();
+                        cfpLoadingBar.complete();
                     }, 500);
                 });
             }
@@ -68,7 +86,8 @@ angular.module('myApp.search', ['angular-loading-bar'])
                 ));
             }
 
-            function playlists(id) {
+            function playlists(...id) {
+                if (id[0].length === 0) return false;
                 executeRequest(gapiService.buildApiRequest('GET',
                     '/youtube/v3/playlists',
                     {
@@ -79,18 +98,20 @@ angular.module('myApp.search', ['angular-loading-bar'])
                 ));
             }
 
-            function videoItems(id) {
+            function videoItems(...id) {
+                if (id[0].length === 0) return false;
                 executeRequest(gapiService.buildApiRequest('GET',
                     '/youtube/v3/videos',
                     {
                         'id': id,
-                        'part': 'snippet,contentDetails,statistics,liveStreamingDetails',
+                        'part': 'snippet,contentDetails,statistics,liveStreamingDetails,status',
                         'key': gapiService.apiKey
                     }
                 ));
             }
 
-            function channelItems(id) {
+            function channelItems(...id) {
+                if (id[0].length === 0) return false;
                 executeRequest(gapiService.buildApiRequest('GET',
                     '/youtube/v3/channels',
                     {
@@ -101,62 +122,42 @@ angular.module('myApp.search', ['angular-loading-bar'])
                 ));
             }
 
-            function searchItems(item) {
-                let type = item.id.kind.split('youtube#')[1];
-                let id = item.id[`${type}Id`];
-                switch (type) {
-                    case 'video':
-                        videoItems(id);
-                        break;
-                    case 'channel':
-                        channelItems(id);
-                        break;
-                    case 'playlist':
-                        playlists(id);
-                        break;
-                }
-            }
-
-            function uploadDate(filterType) {
-                let ISODate = '';
-                let today = new Date();
-                let lasthour = new Date(today.getTime() - (1000 * 60 * 60));
-                let thismonth = new Date(`${new Date().getFullYear()}-${today.getMonth()}-01`);
-                let thisyear = new Date(`${today.getFullYear()}-01-01`);
-
-                switch (filterType) {
-                    case 'tt':
-                        ISODate = '';
-                        break;
-                    case 'lh':
-                        ISODate = lasthour.toISOString();
-                        break;
-                    case 'tm':
-                        ISODate = thismonth.toISOString();
-                        break;
-                    case 'ty':
-                        ISODate = thisyear.toISOString();
-                        break;
-                }
-                return ISODate;
+            function searchItems(items) {
+                let arr = [];
+                arr.video = [];
+                arr.channel = [];
+                arr.playlist = [];
+                items.forEach(sResult => {
+                    let type = sResult.id.kind.split('youtube#')[1];
+                    let id = sResult.id[`${type}Id`];
+                    arr[type].push(id);
+                });
+                videoItems(arr.video);
+                channelItems(arr.channel);
+                playlists(arr.playlist);
             }
 
             // Filters
             $scope.filter = false;
-            $scope.query = $stateParams.query; // Get query param
-            $scope.date = $stateParams.date; // Get date param
-            $scope.upDate = uploadDate($stateParams.date); // Send ISO date to API
-            $scope.type = $stateParams.type; // Get type param
-            $scope.sort = $stateParams.sort; // Get sort param
+            // Get query param
+            $scope.query = $stateParams.query;
+            // Get date param
+            $scope.date = $stateParams.date;
+            // Send ISO date to API
+            $scope.upDate = filterDate.uploadDate($stateParams.date);
+            // Get type param
+            $scope.type = $stateParams.type;
+            // Get sort param
+            $scope.sort = $stateParams.sort;
             if ($scope.date || $scope.type) $scope.filter = true;
 
-            $scope.searchList = function(pageToken) {
+            $scope.searchList = function (pageToken) {
                 executeRequest(gapiService.buildApiRequest('GET',
                     '/youtube/v3/search',
                     {
                         'q': $scope.query,
                         'part': 'snippet',
-                        'maxResults': 5,
+                        'maxResults': 10,
                         'publishedAfter': $scope.upDate,
                         'order': $scope.sort,
                         'type': $scope.type,
@@ -165,7 +166,6 @@ angular.module('myApp.search', ['angular-loading-bar'])
                     }
                 ));
             };
-
             $scope.searchList();
         }])
 
@@ -173,8 +173,7 @@ angular.module('myApp.search', ['angular-loading-bar'])
         return {
             restrict: 'E',
             scope: {
-                videos: '=',
-                getVid: '='
+                item: '='
             },
             templateUrl: 'views/video-render.html',
             controller: function ($scope) {
@@ -187,7 +186,7 @@ angular.module('myApp.search', ['angular-loading-bar'])
         return {
             restrict: 'E',
             scope: {
-                channels: '=',
+                item: '=',
             },
             templateUrl: 'views/channel-render.html',
             controller: function ($scope) {
@@ -200,8 +199,7 @@ angular.module('myApp.search', ['angular-loading-bar'])
         return {
             restrict: 'E',
             scope: {
-                playlists: '=',
-                playlistItems: '=',
+                item: '='
             },
             templateUrl: 'views/playlist-render.html',
             controller: function ($scope) {
@@ -215,19 +213,21 @@ angular.module('myApp.search', ['angular-loading-bar'])
         return {
             scope: {
                 search: '=',
-                searchList: '&'
+                searchList: '&',
             },
             link: function (scope) {
                 angular.element($window).bind("scroll", function () {
-                    let windowHeight = "innerHeight" in window ? window.innerHeight : document.documentElement.offsetHeight;
-                    let body = document.body, html = document.documentElement;
-                    let docHeight = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight);
-                    let windowBottom = windowHeight + window.pageYOffset;
-                    if (windowBottom >= docHeight) {
-                        document.getElementById('spinner').style.opacity = 1;
-                        $timeout(() => {
-                            scope.searchList();
-                        }, 500);
+                    if (document.getElementById('spinner')) {
+                        let windowHeight = "innerHeight" in window ? window.innerHeight : document.documentElement.offsetHeight;
+                        let body = document.body, html = document.documentElement;
+                        let docHeight = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight);
+                        let windowBottom = windowHeight + window.pageYOffset;
+                        if (windowBottom >= docHeight) {
+                            document.getElementById('spinner').style.opacity = 1;
+                            $timeout(() => {
+                                scope.searchList();
+                            }, 500);
+                        }
                     }
                 });
             }

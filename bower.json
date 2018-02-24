@@ -1,17 +1,18 @@
 {
   "name": "youtube",
-  "description": "A starter project for AngularJS",
-  "version": "0.0.0",
-  "homepage": "https://github.com/angular/angular-seed",
+  "description": "Simple application by youtube API",
+  "repository": "https://github.com/Abdelrhman-Mohamed201/youtube",
+  "version": "1.0.0",
   "license": "MIT",
   "private": true,
   "dependencies": {
     "angular": "~1.6.9",
-    "angular-ui-router": "ui-router#^1.0.15",
+    "angular-ui-router": "1.0.7",
     "angular-loader": "~1.5.0",
     "angular-mocks": "~1.5.0",
     "html5-boilerplate": "^5.3.0",
-    "angular-animate": "^1.5.8"
+    "angular-animate": "^1.5.8",
+    "angular-loading-bar": "^0.9.0"
   },
   "devDependencies": {}
 }

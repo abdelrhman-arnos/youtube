@@ -1,6 +1,8 @@
-<div class="playlist_comp" ng-repeat="(key, item) in playlists">
+<div class="playlist_comp">
     <div class="playlist_comp__thumbnail">
-        <a ui-sref="playlist({id: item.id})">
+        <a ui-sref="video({id: item.videos[0].id, list: item.id})"
+           data-value="{{item.videos[0].id}}"
+           data-type="playlist">
             <img ng-src='{{item.snippet.thumbnails.medium.url}}' alt="">
             <div class="playlist_comp__overlay">
                 {{item.contentDetails.itemCount}}
@@ -13,18 +15,32 @@
     </div>
     <div class="playlist_comp__text">
         <div class="playlist_comp__header">
-            <a ui-sref="video({id: item.id})">
+            <a ui-sref="video({id: item.videos[0].id, list: item.id})"
+               data-value="{{item.videos[0].id}}"
+               data-type="video">
                 <div class="playlist_comp__title">{{item.snippet.title}}</div>
             </a>
             <div class="playlist_comp__description">
-                <a ui-sref="channel({id: item.snippet.channelId})">
+                <a ui-sref="channel({id: item.snippet.channelId})"
+                   data-value="{{item.snippet.channelId}}"
+                   data-type="channel">
                     <div class="playlist_comp__channel-name">
                         {{item.snippet.channelTitle}}
                     </div>
                 </a>
             </div>
-
-            <a ui-sref="playlist({id: item.id})">
+            <div class="--desktop" ng-repeat="vid in item.videos">
+                <div class="playlist_comp__videos">
+                    <a ui-sref="video({id: vid.id})"
+                       data-value="{{vid.id}}"
+                       data-type="video">{{vid.snippet.title}}</a>
+                    <div class="details__separator">•</div>
+                    {{vid.contentDetails.duration | duration}}
+                </div>
+            </div>
+            <a class="--desktop" ui-sref="video({id: item.videos[0].id, list: item.id})"
+               data-value="{{item.videos[0].id}}"
+               data-type="playlist">
                 <div class="playlist_comp__list">
                     View full playlist ({{item.contentDetails.itemCount}} videos)
                 </div>
